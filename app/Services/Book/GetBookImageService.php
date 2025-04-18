@@ -3,7 +3,6 @@
 namespace App\Services\Book;
 
 use Illuminate\Support\Facades\Http;
-use App\Services\Book\GetBookImageInterface;
 
 class GetBookImageService implements GetBookImageInterface
 {
@@ -17,7 +16,7 @@ class GetBookImageService implements GetBookImageInterface
             return null;
         }
 
-        $url = $this->baseUrl . $isbn . '-' . $size . '.jpg';
+        $url = $this->baseUrl.$isbn.'-'.$size.'.jpg';
 
         $response = Http::head($url);
 

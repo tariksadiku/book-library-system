@@ -16,7 +16,7 @@ class AddFiltersToProps
                 'search' => $request->input('search'),
                 'sort' => $request->input('sort'),
                 'page' => $request->input('page'),
-            ]
+            ],
         ]);
 
         return $next($request);

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateBookRequest;
 use App\Http\Resources\BookResource;
-use App\Services\Book\GetBooksService;
-use Illuminate\Http\Request;
-use App\Services\Book\CreateBookService;
 use App\Models\Book;
+use App\Services\Book\CreateBookService;
+use App\Services\Book\GetBooksService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -31,12 +31,13 @@ class BookController extends Controller
             $request->validated('author_id')
         ))->execute();
 
-       return redirect('/books');
+        return redirect('/books');
     }
 
     public function show(int $id): InertiaResponse
     {
         $book = Book::findOrFail($id);
+
         return Inertia::render('Book/Show', [
             'book' => $book,
         ]);

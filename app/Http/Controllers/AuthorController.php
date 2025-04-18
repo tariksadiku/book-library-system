@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAuthorRequest;
 use App\Http\Resources\AuthorResource;
-use App\Services\Author\GetAuthorsService;
-use App\Services\Author\CreateAuthorService;
-use Inertia\Inertia;
 use App\Models\Author;
+use App\Services\Author\CreateAuthorService;
+use App\Services\Author\GetAuthorsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
 class AuthorController extends Controller

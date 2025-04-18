@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Middleware\AddFiltersToProps;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/authors');

@@ -8,8 +8,8 @@ trait HasSearch
 {
     public function scopeSearch(Builder $query, ?string $search): void
     {
-        if (!empty($search)) {
-            $query->where('name', 'like', "%" . $search . "%");
+        if (! empty($search)) {
+            $query->where('name', 'like', '%'.$search.'%');
         }
     }
 }

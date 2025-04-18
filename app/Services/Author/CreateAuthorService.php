@@ -6,7 +6,7 @@ use App\Models\Author;
 
 class CreateAuthorService
 {
-    public function __construct(private string $name){}
+    public function __construct(private string $name) {}
 
     public function execute(): Author
     {

@@ -1,5 +1,6 @@
 <?php
-namespace App\Services\Book;
+
+namespace App\Contracts;
 
 interface GetBookImageInterface
 {

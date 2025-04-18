@@ -6,7 +6,7 @@ use App\Models\Author;
 
 class GetAuthorsService
 {
-    public function __construct(private ?string $search){}
+    public function __construct(private ?string $search) {}
 
     public function execute()
     {

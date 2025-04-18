@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Exception;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class InertiaException extends Exception

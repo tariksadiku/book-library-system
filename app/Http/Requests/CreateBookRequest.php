@@ -25,7 +25,7 @@ class CreateBookRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'author_id' => 'required|exists:authors,id',
-            'ISBN' => ['required', 'string', 'max:13', new Isbn()],
+            'ISBN' => ['required', 'string', 'max:13', new Isbn],
         ];
     }
 }

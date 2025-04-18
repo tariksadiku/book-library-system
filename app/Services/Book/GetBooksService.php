@@ -6,7 +6,7 @@ use App\Models\Book;
 
 class GetBooksService
 {
-    public function __construct(private ?string $search){}
+    public function __construct(private ?string $search) {}
 
     public function execute()
     {
