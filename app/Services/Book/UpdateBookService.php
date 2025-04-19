@@ -53,13 +53,13 @@ class UpdateBookService
             $book->cover_url = $newImage;
         }
 
-        $book = $book->update([
+        $book->update([
             'title' => $this->title,
             'isbn' => $this->isbn,
             'author_id' => $this->authorId,
             'cover_url' => $book->cover_url,
         ]);
-
+        
         return Cache::remember($book->cacheKey(), 3600, function () use ($book) {
             return $book;
         });
