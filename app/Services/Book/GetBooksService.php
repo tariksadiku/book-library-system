@@ -6,12 +6,12 @@ use App\Models\Book;
 
 class GetBooksService
 {
-    public function __construct(private ?string $search, private ?string $sort) {}
+    public function __construct(private ?string $search, private ?array $sort) {}
 
     public function execute()
     {
         return Book::with('author')
-            ->search($this->search)
+            ->searchBy($this->search)
             ->sort($this->sort)
             ->paginate(10)
             ->withQueryString();

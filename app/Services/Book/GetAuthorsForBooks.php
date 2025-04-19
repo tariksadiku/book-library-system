@@ -11,7 +11,7 @@ class GetAuthorsForBooks
 
     public function execute(): LengthAwarePaginator
     {
-        return Author::search($this->search)
+        return Author::searchBy($this->search)
             ->paginate(10)
             ->withQueryString();
     }

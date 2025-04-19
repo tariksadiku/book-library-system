@@ -13,7 +13,7 @@ class Book extends Model
 
     protected $fillable = ['title', 'isbn', 'cover_url', 'author_id'];
 
-    protected array $searchKeys = ['title', 'isbn'];
+    protected array $searchKeys = ['title', 'isbn', 'author_id'];
 
     protected array $sortableKeys = ['title', 'isbn', 'author_id'];
 

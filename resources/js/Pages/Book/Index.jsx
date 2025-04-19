@@ -22,16 +22,16 @@ const Index = ({ books, filters }) => {
     };
 
     const handleSort = (column) => {
+        console.log(filters);
         router.get(
             "/books",
             {
                 ...filters,
-                column: column,
-                direction:
-                    filters?.sort.column === column &&
-                    filters?.sort.direction === "asc"
-                        ? "desc"
-                        : "asc",
+                sort: {
+                    column: column,
+                    direction:
+                        filters?.sort?.direction === "asc" ? "desc" : "asc",
+                },
             },
             { preserveState: true }
         );
@@ -49,7 +49,6 @@ const Index = ({ books, filters }) => {
             <h1 className="text-black-500 text-3xl font-semibold mb-4">
                 Books
             </h1>
-
             {books.data.length !== 0 && (
                 <SearchForm
                     value={search}
@@ -58,14 +57,13 @@ const Index = ({ books, filters }) => {
                     placeholder="Search books"
                 />
             )}
-
             {books.data.length === 0 ? (
                 <p className="text-black-500">No books available.</p>
             ) : (
                 <table className="w-full">
                     <TableHead
                         columns={columns}
-                        sortColumn={filters?.sort_column}
+                        sortColumn={filters?.sort?.column}
                         onSort={handleSort}
                     />
                     <tbody>
