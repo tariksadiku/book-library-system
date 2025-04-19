@@ -11,7 +11,7 @@ class GetBookImageService implements GetBookImageInterface
 
     private string $coverBaseUrl = 'https://covers.openlibrary.org/b/id/';
 
-    public function getImageUrl(string $isbn, string $size = 'S'): ?string
+    public function getImageUrl(string $isbn, string $size = 'L'): ?string
     {
         $isbn = trim($isbn);
 
