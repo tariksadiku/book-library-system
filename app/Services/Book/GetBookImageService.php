@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Services\Book;
+
+use App\Contracts\GetBookImageInterface;
+use App\Traits\HasCacheKey;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+
+class GetBookImageService implements GetBookImageInterface
+{
+    use HasCacheKey;
+
+    private string $bookApiUrl = 'https://openlibrary.org/isbn/';
+
+    private string $coverBaseUrl = 'https://covers.openlibrary.org/b/id/';
+
+    public function getImageUrl(string $isbn, string $size = 'L'): ?string
+    {
+        $isbn = trim($isbn);
+
+        if (empty($isbn)) {
+            return null;
+        }
+
+        $cacheKey = $this->cacheKey($isbn);
+
+        $coverId = Cache::remember($cacheKey, now()->addDays(7), function () use ($isbn) {
+            $response = Http::get($this->bookApiUrl.$isbn.'.json');
+
+            if (! $response->ok() || ! $response->json('covers')) {
+                return null;
+            }
+
+            return $response->json('covers')[0] ?? null;
+        });
+
+        if (! $coverId) {
+            return null;
+        }
+
+        return $this->coverBaseUrl.$coverId.'-'.$size.'.jpg';
+    }
+}
