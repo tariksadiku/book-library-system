@@ -53,6 +53,10 @@ The way we implement caching on this app is based on `updated_at` on `Eloquent M
 
 Since Inertia handles everything through AJAX requests but not as actual API responses, exceptions should be handled to direct to an error page. For this reason I demonstrated creating two different Exception classes such as `AuthorForBookNotFoundException` and `NoBookImageFoundException` who extend an abstract class named `InertiaException`, the `render` function of this base class will always redirect to an Error Page showing the appropriate error status.
 
+### Resources
+
+To remove any sort of serialization of data from Controllers (since that is not their job), I added Resources to control how the data is sent back to the frontend. In these resources, I also add the relationship data only if the relationships have been previously loaded on the queries (with the `with` function, to escape the N + 1 problem)
+
 ### Traits
 
 Since we already mentioned `cacheKey` in the `Cache` section, I make use of `Traits` when I want to attach shared behavior to multiple classes (in our case, Models) without wanting to add another inheritance chain. I believe the traits used here create a simpler design to get your head around (`UseSort`, `UseSearch`, and `UseCacheKey`). In this case, composition feels better over inheritance.
