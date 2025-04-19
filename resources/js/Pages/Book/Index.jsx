@@ -22,7 +22,6 @@ const Index = ({ books, filters }) => {
     };
 
     const handleSort = (column) => {
-        console.log(filters);
         router.get(
             "/books",
             {
