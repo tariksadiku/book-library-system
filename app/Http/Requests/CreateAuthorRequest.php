@@ -22,7 +22,9 @@ class CreateAuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:50',
+            'name' => 'required|string|min:2|max:50',
+            'birth_date' => 'required|date',
+            'biography' => 'required|string|max:500',
         ];
     }
 }

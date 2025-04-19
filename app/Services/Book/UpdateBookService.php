@@ -8,7 +8,7 @@ use App\Exceptions\NoBookImageFoundException;
 use App\Models\Author;
 use App\Models\Book;
 
-class CreateBookService
+class UpdateBookService
 {
     private string $title;
 
@@ -16,36 +16,49 @@ class CreateBookService
 
     private int $authorId;
 
+    private int $id;
+
     private GetBookImageInterface $getBookImage;
 
-    public function __construct(string $title, string $isbn, int $authorId)
+    public function __construct(int $id, string $title, string $isbn, int $authorId)
     {
+        $this->id = $id;
         $this->title = $title;
         $this->isbn = $isbn;
         $this->authorId = $authorId;
         $this->getBookImage = app(GetBookImageInterface::class);
-
     }
 
     public function execute(): Book
     {
+        $book = Book::findOrFail($this->id);
         $authorId = Author::firstWhere('id', $this->authorId);
 
         if (! $authorId) {
-            throw new AuthorForBookNotFoundException('Author not found for the book with ISBN: '.$this->isbn.' and author ID: '.$this->authorId);
+            throw new AuthorForBookNotFoundException(
+                'Author not found for the book with ISBN: '.$this->isbn.' and author ID: '.$this->authorId
+            );
         }
 
-        $imageUrl = $this->getBookImage->getImageUrl($this->isbn);
+        if ($book->isbn !== $this->isbn) {
+            $newImage = $this->getBookImage->getImageUrl($this->isbn);
 
-        if (! $imageUrl) {
-            throw new NoBookImageFoundException('No image found for the book with ISBN: '.$this->isbn);
+            if (! $newImage) {
+                throw new NoBookImageFoundException(
+                    'No image found for the provided ISBN: '.$this->isbn
+                );
+            }
+
+            $book->cover_url = $newImage;
         }
 
-        return Book::create([
+        $book->update([
             'title' => $this->title,
             'isbn' => $this->isbn,
-            'cover_url' => $imageUrl,
             'author_id' => $this->authorId,
+            'cover_url' => $book->cover_url,
         ]);
+
+        return $book;
     }
 }

@@ -11,7 +11,11 @@ class Author extends Model
 {
     use HasSearch, HasSort;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'birth_date', 'biography'];
+
+    protected array $searchKeys = ['name', 'birth_date', 'biography'];
+
+    protected array $sortableKeys = ['name', 'birth_date', 'biography'];
 
     public function books(): HasMany
     {

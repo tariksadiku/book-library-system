@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\Book\GetBookImageInterface;
+use App\Contracts\GetBookImageInterface;
 use App\Services\Book\GetBookImageService;
 use Illuminate\Support\ServiceProvider;
 

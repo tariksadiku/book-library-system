@@ -2,13 +2,16 @@
 
 namespace App\Services\Book;
 
+use App\Contracts\GetBookImageInterface;
 use Illuminate\Support\Facades\Http;
 
 class GetBookImageService implements GetBookImageInterface
 {
-    private string $baseUrl = 'https://covers.openlibrary.org/b/isbn/';
+    private string $bookApiUrl = 'https://openlibrary.org/isbn/';
 
-    public function getImageUrl(string $isbn, string $size = 'L'): ?string
+    private string $coverBaseUrl = 'https://covers.openlibrary.org/b/id/';
+
+    public function getImageUrl(string $isbn, string $size = 'S'): ?string
     {
         $isbn = trim($isbn);
 
@@ -16,10 +19,18 @@ class GetBookImageService implements GetBookImageInterface
             return null;
         }
 
-        $url = $this->baseUrl.$isbn.'-'.$size.'.jpg';
+        $response = Http::get($this->bookApiUrl.$isbn.'.json');
 
-        $response = Http::head($url);
+        if (! $response->ok() || ! $response->json('covers')) {
+            return null;
+        }
 
-        return $response->ok() ? $url : null;
+        $coverId = $response->json('covers')[0] ?? null;
+
+        if (! $coverId) {
+            return null;
+        }
+
+        return $this->coverBaseUrl.$coverId.'-'.$size.'.jpg';
     }
 }

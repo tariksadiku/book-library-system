@@ -11,7 +11,11 @@ class Book extends Model
 {
     use HasSearch, HasSort;
 
-    protected $fillable = ['name', 'isbn', 'image', 'author_id'];
+    protected $fillable = ['title', 'isbn', 'cover_url', 'author_id'];
+
+    protected array $searchKeys = ['title', 'isbn'];
+
+    protected array $sortableKeys = ['title', 'isbn', 'author_id'];
 
     public function author(): BelongsTo
     {

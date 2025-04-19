@@ -1,6 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
-import Layout from "./Shared/Layout";
+import Layout from "./Layout";
+import { Toaster } from "react-hot-toast";
 import "../css/app.css";
 
 createInertiaApp({
@@ -12,6 +13,12 @@ createInertiaApp({
         return page;
     },
     setup({ el, App, props }) {
-        createRoot(el).render(<App {...props} />);
+        createRoot(el).render(
+            <>
+                <App {...props} />
+                <Toaster position="top-right" reverseOrder={false} />
+            </>
+        );
     },
+    title: (title) => `Book Library - ${title}`,
 });

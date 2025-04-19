@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Services\Author;
+namespace App\Services\Book;
 
 use App\Models\Author;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class GetAuthorsService
+class GetAuthorsForBooks
 {
-    public function __construct(private ?string $search, private ?array $sort) {}
+    public function __construct(private ?string $search) {}
 
     public function execute(): LengthAwarePaginator
     {
         return Author::search($this->search)
-            ->sort($this->sort)
             ->paginate(10)
             ->withQueryString();
     }

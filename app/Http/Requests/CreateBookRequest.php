@@ -23,9 +23,9 @@ class CreateBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:50',
+            'title' => 'required|string|max:50',
             'author_id' => 'required|exists:authors,id',
-            'ISBN' => ['required', 'string', 'max:13', new Isbn],
+            'isbn' => ['required', 'string', new Isbn],
         ];
     }
 }
