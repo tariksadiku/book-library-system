@@ -4,8 +4,13 @@
 
 Ensure you have the following installed on your system before you start:
 
--   **PHP**: Version 8.2
+-   **PHP**: Version 8.2 or higher
 -   **Node.js**: Version 20.14.1
+
+Start the project by running:
+
+1. `php artisan serve` to serve the backend
+2. `npm run dev` to serve the frontend
 
 ## Architecture
 
