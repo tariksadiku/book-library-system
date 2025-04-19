@@ -64,6 +64,7 @@ Since we already mentioned `cacheKey` in the `Cache` section, I make use of `Tra
 ### Testing
 
 Testing is pretty straightforward. I generally prefer `Feature` tests over `Unit` tests. Using Inertia's testing helper, we do mocked HTTP requests on our endpoints.
+I am also running all these tests through a github action named `run-tests` on each PR to main.
 
 ### Tailwind for CSS
 
