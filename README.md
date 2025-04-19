@@ -49,6 +49,10 @@ The way we implement caching on this app is based on `updated_at` on `Eloquent M
 3. If `updated_at` changes, that cache will be invalidated and evicted (based on our eviction strategy). Meanwhile, any time a user gets a new model, it will save again to the cache with a new key (since `updated_at` is changed again).
 4. When we update a model which has a relationship with another model, we bust the related cache using static model functions such as `saved`. An example can be seen in the `Author.php` model where we bust the cache for the `Books` model based on the `Book` `cacheKey`.
 
+### Exceptions
+
+Since Inertia handles everything through AJAX requests but not as actual API responses, exceptions should be handled to direct to an error page. For this reason I demonstrated creating two different Exception classes such as `AuthorForBookNotFoundException` and `NoBookImageFoundException` who extend an abstract class named `InertiaException`, the `render` function of this base class will always redirect to an Error Page showing the appropriate error status.
+
 ### Traits
 
 Since we already mentioned `cacheKey` in the `Cache` section, I make use of `Traits` when I want to attach shared behavior to multiple classes (in our case, Models) without wanting to add another inheritance chain. I believe the traits used here create a simpler design to get your head around (`UseSort`, `UseSearch`, and `UseCacheKey`). In this case, composition feels better over inheritance.
