@@ -1,61 +1,109 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Library Book
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Prerequisites
 
-## About Laravel
+Ensure you have the following installed on your system before you start:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   **PHP**: Version 8.2 or higher
+-   **Node.js**: Version 20.14.1
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Start the project by running:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. `php artisan serve` to serve the backend
+2. `npm run dev` to serve the frontend
 
-## Learning Laravel
+## Architecture
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Services
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+For business logic, we create service classes, which are classes with one public method that encapsulate actions a user would take. All the dependencies inside the class are what it needs, so we keep it nice and doing only one thing. If it needs to do something else, it delegates that action to another service class (e.g., `GetBookImageService`).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Validation
 
-## Laravel Sponsors
+For validation, I rely heavily on `Form Requests` provided by Laravel. I don't think any endpoint should exist without some sort of validation. I prefer to do validations in a class instead of the controllers.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Design Patterns
 
-### Premium Partners
+In our architecture, we use design patterns to keep the code organized and maintainable:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **Facades**: For example, `GetBookImageService` is a `Facade` design pattern where it encapsulates a whole library (OpenLibrary) to only be used to get a simple cover URL.
+-   **Dependency Injection**: We leverage dependency injection to provide all the required dependencies to services. This makes services easier to test and maintain, as we can easily swap out dependencies for mock objects or different implementations. For example, we use `GetBookImageService` in production code but `MockGetBookImageService` for testing.
 
-## Contributing
+### Inertia
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+We are using **Inertia** to build modern, single-page applications (SPAs) while maintaining the simplicity of traditional server-side routing.
 
-## Code of Conduct
+#### Benefits of Inertia:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+-   **Full-Stack Simplicity**: The simplicity comes from continuing to use server-side routing (so no need for a client-side router), better SEO (not returning a simple empty HTML page but a complete HTML page), no need to use libraries such as React-Query to fetch data from the database (shared props from the server-side Inertia client are all we need).
+-   **Seamless React Integration**: It works effortlessly with React, providing the ability to build powerful client-side interactivity while keeping the server-side logic and routes intact.
+-   **No API Layer**: With Inertia, we avoid the complexity of an API layer. This even extends to using a very safe but very simple to implement session-based authentication if we desire.
+-   **Improved Development Speed**: It's simply React (or Vue) replacing Blade, not much more.
 
-## Security Vulnerabilities
+### Cache
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The way we implement caching on this app is based on `updated_at` on `Eloquent Models`:
 
-## License
+1. We save data in the cache with keys such as: `model->id` + `model->updated_at`
+2. We also retrieve keys based on this format.
+3. If `updated_at` changes, that cache will be invalidated and evicted (based on our eviction strategy). Meanwhile, any time a user gets a new model, it will save again to the cache with a new key (since `updated_at` is changed again).
+4. When we update a model which has a relationship with another model, we bust the related cache using static model functions such as `saved`. An example can be seen in the `Author.php` model where we bust the cache for the `Books` model based on the `Book` `cacheKey`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Exceptions
+
+Since Inertia handles everything through AJAX requests but not as actual API responses, exceptions should be handled to direct to an error page. For this reason I demonstrated creating two different Exception classes such as `AuthorForBookNotFoundException` and `NoBookImageFoundException` who extend an abstract class named `InertiaException`, the `render` function of this base class will always redirect to an Error Page showing the appropriate error status.
+
+### Resources
+
+To remove any sort of serialization of data from Controllers (since that is not their job), I added Resources to control how the data is sent back to the frontend. In these resources, I also add the relationship data only if the relationships have been previously loaded on the queries (with the `with` function, to escape the N + 1 problem)
+
+### Traits
+
+Since we already mentioned `cacheKey` in the `Cache` section, I make use of `Traits` when I want to attach shared behavior to multiple classes (in our case, Models) without wanting to add another inheritance chain. I believe the traits used here create a simpler design to get your head around (`UseSort`, `UseSearch`, and `UseCacheKey`). In this case, composition feels better over inheritance.
+
+### Testing
+
+Testing is pretty straightforward. I generally prefer `Feature` tests over `Unit` tests. Using Inertia's testing helper, we do mocked HTTP requests on our endpoints.
+I am also running all these tests through a github action named `run-tests` on each PR to main.
+
+### Tailwind for CSS
+
+Tailwind is also pretty industry standard now. I feel it gives us as engineers a very quick way (but not dirty) to write nice and clean CSS in rapid speed.
+
+### Database
+
+Our database schema is minimal but flexible enough for a library/book relationship.
+
+#### Tables and Columns
+
+##### Authors
+
+This table stores all authors and has the following columns:
+
+| Column       | Type    | Notes                       |
+| ------------ | ------- | --------------------------- |
+| `id`         | integer | Primary key, auto-increment |
+| `name`       | string  | Required                    |
+| `birth_date` | date    | Required                    |
+| `biography`  | text    | Required                    |
+
+##### Books
+
+Each book belongs to an author. This table has the following columns:
+
+| Column      | Type    | Notes                         |
+| ----------- | ------- | ----------------------------- |
+| `id`        | integer | Primary key, auto-increment   |
+| `title`     | string  | Required                      |
+| `isbn`      | string  | Required                      |
+| `cover_url` | string  | Optional – filled via service |
+| `author_id` | integer | Foreign key to `authors`      |
+
+#### Relationships
+
+-   **Author has many Books**
+-   **Book belongs to an Author**
+
+### Filtering, Sorting, Pagination
+
+For filtering and sorting, we are using two other traits to attach this behavior on respective models, `HasSort` and `HasSearch`, which by themselves are `scopes` offered by Laravel to make querying on Models much easier to read. These scopes are used on `Service` classes to compose the necessary queries, additionally we are using another Laravel feature `pagination` to paginate results in chunks of 10.
