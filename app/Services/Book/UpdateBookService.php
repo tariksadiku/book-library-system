@@ -59,7 +59,7 @@ class UpdateBookService
             'author_id' => $this->authorId,
             'cover_url' => $book->cover_url,
         ]);
-        
+
         return Cache::remember($book->cacheKey(), 3600, function () use ($book) {
             return $book;
         });

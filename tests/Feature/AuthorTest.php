@@ -15,7 +15,7 @@ class AuthorTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(302);
     }
-    
+
     public function test_get_empty_authors(): void
     {
         $response = $this->get('/authors');
@@ -69,7 +69,7 @@ class AuthorTest extends TestCase
 
         $this->post('/authors', $this->dummyAuthors->first())->assertRedirect('/authors');
 
-        $response = $this->get("/authors/1/edit");
+        $response = $this->get('/authors/1/edit');
 
         $response->assertStatus(200)
             ->assertInertia(fn (Assert $page) => $page
@@ -132,7 +132,7 @@ class AuthorTest extends TestCase
         $this->post('/authors', $this->dummyAuthors->first())->assertRedirect('/authors');
         $this->post('/authors', $this->dummyAuthors->last())->assertRedirect('/authors');
 
-        $response = $this->get('/authors?' . http_build_query([
+        $response = $this->get('/authors?'.http_build_query([
             'page' => '',
             'search' => '',
             'sort' => [
@@ -155,7 +155,7 @@ class AuthorTest extends TestCase
         $this->post('/authors', $this->dummyAuthors->first())->assertRedirect('/authors');
         $this->post('/authors', $this->dummyAuthors->last())->assertRedirect('/authors');
 
-        $response = $this->get('/authors?' . http_build_query([
+        $response = $this->get('/authors?'.http_build_query([
             'page' => '',
             'search' => '',
             'sort' => [

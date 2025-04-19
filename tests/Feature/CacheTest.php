@@ -4,16 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\Author;
 use App\Models\Book;
-use Tests\TestCase;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Tests\TestCase;
 
 class CacheTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_author_cache(): void
-    {   
+    {
         $author = Author::create($this->dummyAuthors->first());
 
         Cache::remember($author->cacheKey(), 60, function () use ($author) {
@@ -40,7 +40,7 @@ class CacheTest extends TestCase
             return $book;
         });
 
-        $this->assertEquals("Book One", Cache::get($book->cacheKey())->title);
+        $this->assertEquals('Book One', Cache::get($book->cacheKey())->title);
         $this->assertEquals(1, Cache::get($book->cacheKey())->author_id);
 
         $author->update(['name' => 'Updated Author']);
@@ -55,7 +55,7 @@ class CacheTest extends TestCase
         });
         Cache::remember($book->cacheKey(), 60, function () use ($book) {
             return $book;
-        }); 
+        });
 
         // Now we can check if the author cache is updated
         $this->assertEquals('Updated Author', Cache::get($author->cacheKey())->name);

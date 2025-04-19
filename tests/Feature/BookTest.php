@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Inertia\Testing\AssertableInertia as Assert;
-use Tests\TestCase;
 use App\Contracts\GetBookImageInterface;
 use App\Models\Author;
 use App\Services\Book\MockGetBookImageService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
 
 class BookTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->app->bind(GetBookImageInterface::class, MockGetBookImageService::class);
@@ -80,7 +80,7 @@ class BookTest extends TestCase
         $this->createAuthors();
         $this->post('/books', $this->dummyBooks->first())->assertRedirect('/books');
 
-        $response = $this->get("/books/1/edit");
+        $response = $this->get('/books/1/edit');
 
         $response->assertStatus(200)
             ->assertInertia(fn (Assert $page) => $page
@@ -95,7 +95,7 @@ class BookTest extends TestCase
         $this->createAuthors();
         $this->post('/books', $this->dummyBooks->first())->assertRedirect('/books');
 
-        $response = $this->put("/books/1", [
+        $response = $this->put('/books/1', [
             'title' => 'Updated Book Title',
             'isbn' => '978-0553593716',
             'author_id' => 2,
@@ -115,7 +115,7 @@ class BookTest extends TestCase
         $this->createAuthors();
         $this->post('/books', $this->dummyBooks->first())->assertRedirect('/books');
 
-        $response = $this->delete("/books/1");
+        $response = $this->delete('/books/1');
 
         $response->assertRedirect('/books');
 
@@ -149,7 +149,7 @@ class BookTest extends TestCase
         $this->post('/books', $this->dummyBooks->first())->assertRedirect('/books');
         $this->post('/books', $this->dummyBooks->last())->assertRedirect('/books');
 
-        $response = $this->get('/books?' . http_build_query([
+        $response = $this->get('/books?'.http_build_query([
             'page' => '',
             'search' => '',
             'sort' => [
@@ -172,7 +172,7 @@ class BookTest extends TestCase
         $this->post('/books', $this->dummyBooks->first())->assertRedirect('/books');
         $this->post('/books', $this->dummyBooks->last())->assertRedirect('/books');
 
-        $response = $this->get('/books?' . http_build_query([
+        $response = $this->get('/books?'.http_build_query([
             'page' => '',
             'search' => '',
             'sort' => [
@@ -199,5 +199,4 @@ class BookTest extends TestCase
             ]);
         });
     }
-    
 }
