@@ -77,7 +77,12 @@ const Index = ({ books, filters }) => {
                                 </td>
                                 <td className="px-6 py-4">{book.isbn}</td>
                                 <td className="px-6 py-4">
-                                    {book.author?.name ?? "Unknown"}
+                                    <Link
+                                        className="text-blue-500 hover:underline"
+                                        href={`/authors/${book.author?.id}`}
+                                    >
+                                        {book.author?.name ?? "Unknown"}
+                                    </Link>
                                 </td>
                                 <td className="px-6 py-4">
                                     <Link

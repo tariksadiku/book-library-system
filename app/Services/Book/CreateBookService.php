@@ -7,6 +7,7 @@ use App\Exceptions\AuthorForBookNotFoundException;
 use App\Exceptions\NoBookImageFoundException;
 use App\Models\Author;
 use App\Models\Book;
+use Illuminate\Support\Facades\Cache;
 
 class CreateBookService
 {
@@ -24,7 +25,6 @@ class CreateBookService
         $this->isbn = $isbn;
         $this->authorId = $authorId;
         $this->getBookImage = app(GetBookImageInterface::class);
-
     }
 
     public function execute(): Book
@@ -41,11 +41,15 @@ class CreateBookService
             throw new NoBookImageFoundException('No image found for the book with ISBN: '.$this->isbn);
         }
 
-        return Book::create([
+        $book = Book::create([
             'title' => $this->title,
             'isbn' => $this->isbn,
             'cover_url' => $imageUrl,
             'author_id' => $this->authorId,
         ]);
+
+        return Cache::remember($book->cacheKey(), 3600, function () use ($book) {
+            return $book;
+        });
     }
 }

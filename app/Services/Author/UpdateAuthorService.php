@@ -3,6 +3,7 @@
 namespace App\Services\Author;
 
 use App\Models\Author;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateAuthorService
 {
@@ -12,12 +13,16 @@ class UpdateAuthorService
     {
         $author = Author::findOrFail($this->id);
 
+        $cacheKey = $author->cacheKey();
+
         $author->update([
             'name' => $this->name,
             'birth_date' => $this->birthDate,
             'biography' => $this->biography,
         ]);
 
-        return $author;
+        return Cache::remember($cacheKey, 3600, function () use ($author) {
+            return $author;
+        });
     }
 }

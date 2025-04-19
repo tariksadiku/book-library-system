@@ -52,7 +52,7 @@ const Edit = ({ book, authors, filters }) => {
             />
 
             <div className="mt-6 text-center">
-                <Link href="/book" className="text-blue-600 hover:underline">
+                <Link href="/books" className="text-blue-600 hover:underline">
                     Back to books list
                 </Link>
             </div>

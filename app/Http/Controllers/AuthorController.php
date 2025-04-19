@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAuthorRequest;
 use App\Http\Resources\AuthorResource;
 use App\Models\Author;
 use App\Services\Author\CreateAuthorService;
+use App\Services\Author\GetAuthorService;
 use App\Services\Author\GetAuthorsService;
 use App\Services\Author\UpdateAuthorService;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,10 @@ class AuthorController extends Controller
 
     public function show(int $id): InertiaResponse
     {
-        $author = Author::with('books')->findOrFail($id);
+
+        $author = (new GetAuthorService(
+            $id
+        ))->execute();
 
         return Inertia::render('Author/Show', ['author' => new AuthorResource($author)]);
     }

@@ -7,6 +7,7 @@ use App\Exceptions\AuthorForBookNotFoundException;
 use App\Exceptions\NoBookImageFoundException;
 use App\Models\Author;
 use App\Models\Book;
+use Illuminate\Support\Facades\Cache;
 
 class UpdateBookService
 {
@@ -52,13 +53,15 @@ class UpdateBookService
             $book->cover_url = $newImage;
         }
 
-        $book->update([
+        $book = $book->update([
             'title' => $this->title,
             'isbn' => $this->isbn,
             'author_id' => $this->authorId,
             'cover_url' => $book->cover_url,
         ]);
 
-        return $book;
+        return Cache::remember($book->cacheKey(), 3600, function () use ($book) {
+            return $book;
+        });
     }
 }
