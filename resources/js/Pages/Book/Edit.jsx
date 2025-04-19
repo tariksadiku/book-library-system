@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { useForm, Head } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import BookForm from "@components/forms/BookForm";
@@ -34,6 +34,7 @@ const Edit = ({ book, authors, filters }) => {
 
     return (
         <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+            <Head title="Edit Book" />
             <h1 className="text-gray-800 text-3xl font-semibold mb-6">
                 Update Book
             </h1>

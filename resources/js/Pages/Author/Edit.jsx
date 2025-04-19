@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "@inertiajs/react";
+import { useForm, Head } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import AuthorForm from "@components/forms/AuthorForm";
 import toast from "react-hot-toast";
@@ -22,6 +22,7 @@ const Edit = ({ author }) => {
 
     return (
         <div className="bg-gray-50 p-6 rounded-lg shadow-lg">
+            <Head title="Edit Author" />
             <h1 className="text-gray-800 text-3xl font-semibold mb-6">
                 Update Author
             </h1>
