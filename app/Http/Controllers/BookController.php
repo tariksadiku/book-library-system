@@ -9,6 +9,7 @@ use App\Http\Resources\BookResource;
 use App\Models\Book;
 use App\Services\Book\CreateBookService;
 use App\Services\Book\GetAuthorsForBooks;
+use App\Services\Book\GetBookService;
 use App\Services\Book\GetBooksService;
 use App\Services\Book\UpdateBookService;
 use Illuminate\Http\RedirectResponse;
@@ -40,7 +41,7 @@ class BookController extends Controller
 
     public function show(int $id): InertiaResponse
     {
-        $book = Book::with('author')->findOrFail($id);
+        $book = (new GetBookService($id))->execute();
 
         return Inertia::render('Book/Show', [
             'book' => new BookResource($book),

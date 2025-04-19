@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 50);
             $table->string('cover_url', 50);
             $table->string('isbn', 14);
-            $table->foreignId('author_id')->constrained('authors');
+            $table->foreignId('author_id')->constrained('authors')->onDelete('cascade');
             $table->timestamps();
         });
     }

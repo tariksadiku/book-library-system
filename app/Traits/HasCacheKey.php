@@ -12,6 +12,6 @@ trait HasCacheKey
             return $this::class.'_'.$this->id.'_'.$this->updated_at->timestamp;
         }
 
-        return $this::class.$prefix;
+        return $this::class.'_'.$prefix;
     }
 }

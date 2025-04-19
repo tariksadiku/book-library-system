@@ -7,6 +7,7 @@ use App\Traits\HasSearch;
 use App\Traits\HasSort;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 
 class Book extends Model
 {
@@ -17,6 +18,19 @@ class Book extends Model
     protected array $searchKeys = ['title', 'isbn'];
 
     protected array $sortableKeys = ['title', 'isbn'];
+
+    protected static function booted()
+    {
+        static::created(function (Model $book) {
+            $authorCacheKey = $book->author->cacheKey();
+            Cache::forget($authorCacheKey);
+        });
+
+        static::updated(function (Model $book) {
+            $authorCacheKey = $book->author->cacheKey();
+            Cache::forget($authorCacheKey);
+        });
+    }
 
     public function author(): BelongsTo
     {
