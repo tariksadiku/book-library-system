@@ -46,15 +46,20 @@ const Show = (props) => {
                     Books
                 </h2>
                 {author.books?.length > 0 ? (
-                    author.books.map((book) => (
-                        <Link
-                            key={book.id}
-                            href={`/books/${book.id}`}
-                            className="text-blue-600 hover:underline"
-                        >
-                            {book.title}
-                        </Link>
-                    ))
+                    <div className="py-2 bg-white">
+                        <ul className="list-disc list-inside space-y-1">
+                            {author.books.map((book) => (
+                                <li key={book.id}>
+                                    <Link
+                                        href={`/books/${book.id}`}
+                                        className="text-blue-600 hover:underline"
+                                    >
+                                        {book.title}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 ) : (
                     <p className="text-gray-500">No books available.</p>
                 )}

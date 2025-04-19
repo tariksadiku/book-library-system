@@ -24,7 +24,7 @@ class AuthorController extends Controller
             $request->input('sort'),
         ))->execute();
 
-        return inertia('Author/Index', ['authors' => AuthorResource::collection($authors)]);
+        return Inertia::render('Author/Index', ['authors' => AuthorResource::collection($authors)]);
     }
 
     public function store(CreateAuthorRequest $request): RedirectResponse
